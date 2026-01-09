@@ -17,7 +17,7 @@ function setError(msg) { el("error").textContent = msg || ""; }
 
 function setOutput(text) {
   el("output").textContent = text || "";
-  el("copyBtn").disabled = !text || text.startsWith("(The translation");
+  el("copyBtn").disabled = !text || text === "The translation will appear here.";
 }
 
 function swapLangs() {
@@ -38,7 +38,7 @@ function clearAll() {
 
 async function copyOutput() {
   const text = el("output").textContent;
-  if (!text || text.startsWith("(The translation")) return;
+  if (!text || text === "The translation will appear here.") return;
   await navigator.clipboard.writeText(text);
   setStatus("✅ Copied to clipboard.");
   setTimeout(() => setStatus(""), 1500);
