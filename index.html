@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rollomatic Technical Translator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="container">
+    <h1>Rollomatic Technical Translator</h1>
+  </header>
+
+  <main class="container card">
+    <section class="grid">
+      <div>
+        <label for="srcLang">Source language</label>
+        <select id="srcLang">
+          <option value="fr" selected>fr — French</option>
+          <option value="en">en — English</option>
+          <option value="de">de — German</option>
+          <option value="it">it — Italian</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="tgtLang">Target language</label>
+        <select id="tgtLang">
+          <option value="en" selected>en — English</option>
+          <option value="fr">fr — French</option>
+          <option value="de">de — German</option>
+          <option value="it">it — Italian</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button id="swapBtn" type="button">↔ Swap</button>
+      </div>
+    </section>
+
+    <section class="section">
+      <label for="inputText">Text to translate</label>
+      <textarea id="inputText" rows="8" placeholder="Paste your text here..."></textarea>
+
+      <div class="row">
+        <button id="translateBtn" type="button" class="primary">Translate</button>
+        <button id="clearBtn" type="button">Clear</button>
+      </div>
+
+      <p id="status" class="status"></p>
+      <p id="error" class="error"></p>
+    </section>
+
+    <section class="section">
+      <div class="outputHeader">
+        <h2>Result</h2>
+        <button id="copyBtn" type="button" class="ghost" disabled>Copy</button>
+      </div>
+      <pre id="output" class="output">(The translation will appear here)</pre>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <span>© Rollomatic — Technical Translator (Frontend)</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
