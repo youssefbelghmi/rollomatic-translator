@@ -30,7 +30,7 @@ function swapLangs() {
 
 function clearAll() {
   el("inputText").value = "";
-  el("output").textContent = "(The translation will appear here)";
+  el("output").textContent = "The translation will appear here.";
   setStatus("");
   setError("");
   el("copyBtn").disabled = true;
