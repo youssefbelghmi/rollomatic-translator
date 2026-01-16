@@ -10,18 +10,18 @@
 <body>
   <!-- Access Gate -->
   <div id="gate" class="gate" aria-modal="true" role="dialog">
-    <div class="gateCard">
+    <div class="gateCard gateCentered">
       <h2>Access required</h2>
       <p>Please enter the access code to use the translator.</p>
 
       <label for="accessKey">Access code</label>
       <input id="accessKey" type="password" placeholder="Enter code..." autocomplete="off" />
 
-      <div class="row">
+      <div class="row gateRowCenter">
         <button id="unlockBtn" type="button" class="primary">Unlock</button>
       </div>
 
-      <p id="gateError" class="error"></p>
+      <p id="gateError" class="error gateErrorCenter"></p>
     </div>
   </div>
 
@@ -56,7 +56,8 @@
           </select>
         </div>
 
-        <div class="actions">
+        <div class="swapCol">
+          <label class="srOnly" for="swapBtn">Swap languages</label>
           <button id="swapBtn" type="button" class="secondary">Swap</button>
         </div>
 
@@ -76,15 +77,18 @@
     <section class="panelGrid">
       <article class="panel">
         <div class="panelHeader">
-          <h2>Text to translate</h2>
-          <div class="hint">Ctrl/⌘ + Enter</div>
+          <h2>Text to be translated</h2>
+          <div class="panelHeaderRight">
+            <button id="copyInputBtn" type="button" class="ghost" disabled>Copy</button>
+            <div class="hint">Ctrl/⌘ + Enter</div>
+          </div>
         </div>
         <textarea id="inputText" rows="10" placeholder="Paste your text here..."></textarea>
       </article>
 
       <article class="panel">
         <div class="panelHeader">
-          <h2>Result</h2>
+          <h2>Translated text</h2>
           <button id="copyBtn" type="button" class="ghost" disabled>Copy</button>
         </div>
         <pre id="output" class="output">The translation will appear here.</pre>
@@ -95,7 +99,7 @@
     <section class="panelGrid bottomGrid">
       <article class="panel">
         <div class="panelHeader">
-          <h2>Draft translation (SuperText)</h2>
+          <h2>SuperText translation</h2>
           <button id="copyDraftBtn" type="button" class="ghost" disabled>Copy</button>
         </div>
         <pre id="draftOutput" class="output mutedBox">The draft translation will appear here.</pre>
@@ -103,7 +107,7 @@
 
       <article class="panel">
         <div class="panelHeader">
-          <h2>Glossary terms found</h2>
+          <h2>Glossary terms used</h2>
           <button id="copyTermsBtn" type="button" class="ghost" disabled>Copy</button>
         </div>
         <div id="termsBox" class="termsBox mutedBox">No glossary terms found yet.</div>
