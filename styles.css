@@ -50,13 +50,24 @@ body {
   letter-spacing: 0.2px;
 }
 
-/* Simple brand accent bar */
-.brandMark {
-  width: 54px;
-  height: 10px;
+.logoPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.55));
-  opacity: 0.9;
+
+  /* small glassy effect to integrate the logo */
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.14);
+}
+
+.brandLogo {
+  height: 26px;   
+  width: auto;
+  display: block;
+  border-radius: 6px;
 }
 
 /* Screen-reader only utility */
