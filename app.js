@@ -226,11 +226,11 @@ async function unlock() {
 
     el("gate").style.display = "none";
     unlockUI();
-    setStatus("Unlocked.");
+    setStatus("Unlocked");
     setTimeout(() => setStatus(""), 2000);
   } catch (e) {
     ACCESS_KEY = "";
-    setGateError("Invalid code.");
+    setGateError("Invalid code");
   }
 }
 
