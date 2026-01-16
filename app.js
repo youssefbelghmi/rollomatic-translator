@@ -107,7 +107,7 @@ async function copyOutput() {
   const text = el("output").textContent;
   if (!text || text === "The translation will appear here.") return;
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied translated text.");
+  setStatus("✔️ Copied translated text.");
   setTimeout(() => setStatus(""), 1500);
 }
 
@@ -115,7 +115,7 @@ async function copyDraft() {
   const text = el("draftOutput").textContent;
   if (!text || text === "The draft translation will appear here.") return;
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied SuperText translation.");
+  setStatus("✔️ Copied SuperText translation.");
   setTimeout(() => setStatus(""), 1500);
 }
 
@@ -123,7 +123,7 @@ async function copyInput() {
   const text = el("inputText").value.trim();
   if (!text) return;
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied source text.");
+  setStatus("✔️ Copied source text.");
   setTimeout(() => setStatus(""), 1500);
 }
 
@@ -141,7 +141,7 @@ async function copyTerms() {
   if (!text) return;
 
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied glossary terms.");
+  setStatus("✔️ Copied glossary terms.");
   setTimeout(() => setStatus(""), 1500);
 }
 
@@ -230,7 +230,7 @@ async function unlock() {
     setTimeout(() => setStatus(""), 1500);
   } catch (e) {
     ACCESS_KEY = "";
-    setGateError("Invalid code.");
+    setGateError("❌ Invalid code.");
   }
 }
 
@@ -252,7 +252,7 @@ async function translateText() {
 
   const btn = el("translateBtn");
   btn.disabled = true;
-  setStatus("⏳ Translating...");
+  setStatus("⏱️ Translating…");
 
   try {
     const data = await callBackend({ src_lang, tgt_lang, text });
@@ -261,7 +261,7 @@ async function translateText() {
     setDraftOutput(data.draft || "");
     setTerms(data.terms || []);
 
-    setStatus("✅ Done.");
+    setStatus("☑️ Done.");
   } catch (e) {
     if (e.name === "AbortError") {
       setError("Request timed out.");
