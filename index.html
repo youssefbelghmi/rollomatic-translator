@@ -8,6 +8,7 @@
 </head>
 
 <body>
+  <!-- Access Gate -->
   <div id="gate" class="gate" aria-modal="true" role="dialog">
     <div class="gateCard">
       <h2>Access required</h2>
@@ -68,12 +69,34 @@
       <p id="error" class="error"></p>
     </section>
 
+    <!-- Final translation -->
     <section class="section">
       <div class="outputHeader">
         <h2>Result</h2>
         <button id="copyBtn" type="button" class="ghost" disabled>Copy</button>
       </div>
       <pre id="output" class="output">The translation will appear here.</pre>
+    </section>
+
+    <!-- Draft translation -->
+    <section class="section">
+      <div class="outputHeader">
+        <h2>Draft translation (SuperText)</h2>
+        <button id="copyDraftBtn" type="button" class="ghost" disabled>Copy</button>
+      </div>
+      <pre id="draftOutput" class="output mutedBox">The draft translation will appear here.</pre>
+    </section>
+
+    <!-- Glossary terms -->
+    <section class="section">
+      <div class="outputHeader">
+        <h2>Glossary terms found</h2>
+        <button id="copyTermsBtn" type="button" class="ghost" disabled>Copy</button>
+      </div>
+
+      <div id="termsBox" class="termsBox mutedBox">
+        No glossary terms found yet.
+      </div>
     </section>
   </main>
 
