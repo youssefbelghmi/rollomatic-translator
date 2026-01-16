@@ -86,6 +86,9 @@ function swapLangs() {
   const tmp = src.value;
   src.value = tgt.value;
   tgt.value = tmp;
+
+  setStatus("🔄 Languages swapped.");
+  setTimeout(() => setStatus(""), 2000);
 }
 
 function clearAll() {
