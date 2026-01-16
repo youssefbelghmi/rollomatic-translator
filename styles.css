@@ -112,6 +112,10 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   min-height: 110px;
 }
 
+.mutedBox {
+  color: var(--muted);
+}
+
 .status { color: var(--muted); margin: 10px 0 0; min-height: 20px; }
 .error { color: var(--danger); margin: 8px 0 0; min-height: 20px; }
 
@@ -121,6 +125,37 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   padding-bottom: 28px;
 }
 
+/* ================================
+   Glossary terms box
+   ================================ */
+.termsBox {
+  margin-top: 10px;
+  background: rgba(0,0,0,0.20);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 60px;
+}
+
+.termsList {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.termsList li {
+  margin: 6px 0;
+}
+
+.termPair code {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+
+/* ================================
+   Access Gate Overlay
+   ================================ */
 .gate {
   position: fixed;
   inset: 0;
