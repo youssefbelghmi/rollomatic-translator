@@ -8,6 +8,9 @@
 const API_URL = "https://rollomatic-translator-api.onrender.com/translate";
 const REQUEST_TIMEOUT_MS = 30000;
 
+// Access key kept ONLY in memory (so it's requested again on each reload)
+let ACCESS_KEY = "";
+
 // ================================
 // Helpers UI
 // ================================
@@ -15,6 +18,11 @@ const el = (id) => document.getElementById(id);
 
 function setStatus(msg) { el("status").textContent = msg || ""; }
 function setError(msg) { el("error").textContent = msg || ""; }
+
+function setGateError(msg) {
+  const gateErr = el("gateError");
+  if (gateErr) gateErr.textContent = msg || "";
+}
 
 function setOutput(text) {
   el("output").textContent = text || "";
@@ -45,6 +53,29 @@ async function copyOutput() {
   setTimeout(() => setStatus(""), 1500);
 }
 
+function lockUI() {
+  // Disable main app controls until unlocked
+  el("translateBtn").disabled = true;
+  el("swapBtn").disabled = true;
+  el("clearBtn").disabled = true;
+  el("copyBtn").disabled = true;
+  el("inputText").disabled = true;
+  el("srcLang").disabled = true;
+  el("tgtLang").disabled = true;
+}
+
+function unlockUI() {
+  el("translateBtn").disabled = false;
+  el("swapBtn").disabled = false;
+  el("clearBtn").disabled = false;
+  el("inputText").disabled = false;
+  el("srcLang").disabled = false;
+  el("tgtLang").disabled = false;
+
+  // Copy stays disabled until there is output
+  el("copyBtn").disabled = true;
+}
+
 // ================================
 // DEMO translation (frontend only)
 // ================================
@@ -64,7 +95,11 @@ async function callBackend({ src_lang, tgt_lang, text }) {
   try {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        // Access header required by backend
+        "x-access-key": ACCESS_KEY,
+      },
       body: JSON.stringify({ src_lang, tgt_lang, text }),
       signal: controller.signal,
     });
@@ -79,6 +114,45 @@ async function callBackend({ src_lang, tgt_lang, text }) {
     return data;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+// ================================
+// Access gate logic
+// ================================
+async function unlock() {
+  setGateError("");
+
+  const key = el("accessKey").value.trim();
+  if (!key) {
+    setGateError("Please enter the access code.");
+    return;
+  }
+
+  // Save in memory only
+  ACCESS_KEY = key;
+
+  // Validate key by doing a tiny test request (fast & reliable)
+  // If your backend is configured correctly, invalid key will return 401.
+  try {
+    if (!API_URL) {
+      // DEMO mode: allow unlock without server
+      el("gate").style.display = "none";
+      unlockUI();
+      setStatus("ℹ️ DEMO mode: unlocked (no backend).");
+      setTimeout(() => setStatus(""), 1500);
+      return;
+    }
+
+    await callBackend({ src_lang: "fr", tgt_lang: "en", text: "test" });
+
+    el("gate").style.display = "none";
+    unlockUI();
+    setStatus("✅ Unlocked.");
+    setTimeout(() => setStatus(""), 1500);
+  } catch (e) {
+    ACCESS_KEY = "";
+    setGateError("Invalid code.");
   }
 }
 
@@ -132,6 +206,16 @@ async function translateText() {
 // Wire events
 // ================================
 window.addEventListener("DOMContentLoaded", () => {
+  // Gate is shown on every page load
+  lockUI();
+
+  // Gate events
+  el("unlockBtn").addEventListener("click", unlock);
+  el("accessKey").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") unlock();
+  });
+
+  // App events
   el("swapBtn").addEventListener("click", swapLangs);
   el("clearBtn").addEventListener("click", clearAll);
   el("copyBtn").addEventListener("click", copyOutput);
@@ -141,4 +225,7 @@ window.addEventListener("DOMContentLoaded", () => {
   el("inputText").addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") translateText();
   });
+
+  // Focus the access code input by default
+  el("accessKey").focus();
 });
