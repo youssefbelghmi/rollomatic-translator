@@ -8,6 +8,22 @@
 </head>
 
 <body>
+  <div id="gate" class="gate" aria-modal="true" role="dialog">
+    <div class="gateCard">
+      <h2>Access required</h2>
+      <p>Please enter the access code to use the translator.</p>
+
+      <label for="accessKey">Access code</label>
+      <input id="accessKey" type="password" placeholder="Enter code..." autocomplete="off" />
+
+      <div class="row">
+        <button id="unlockBtn" type="button" class="primary">Unlock</button>
+      </div>
+
+      <p id="gateError" class="error"></p>
+    </div>
+  </div>
+
   <header class="container">
     <h1>Rollomatic Technical Translator</h1>
   </header>
