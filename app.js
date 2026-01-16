@@ -2,7 +2,7 @@
 // CONFIG
 // ================================
 const API_URL = "https://rollomatic-translator-api.onrender.com/translate";
-const REQUEST_TIMEOUT_MS = 30000;
+const REQUEST_TIMEOUT_MS = 60000;
 
 // Access key kept ONLY in memory (so it's requested again on each reload)
 let ACCESS_KEY = "";
@@ -108,7 +108,7 @@ async function copyOutput() {
   if (!text || text === "The translation will appear here.") return;
   await navigator.clipboard.writeText(text);
   setStatus("✔️ Copied translated text.");
-  setTimeout(() => setStatus(""), 1500);
+  setTimeout(() => setStatus(""), 2000);
 }
 
 async function copyDraft() {
@@ -116,7 +116,7 @@ async function copyDraft() {
   if (!text || text === "The draft translation will appear here.") return;
   await navigator.clipboard.writeText(text);
   setStatus("✔️ Copied SuperText translation.");
-  setTimeout(() => setStatus(""), 1500);
+  setTimeout(() => setStatus(""), 2000);
 }
 
 async function copyInput() {
@@ -124,7 +124,7 @@ async function copyInput() {
   if (!text) return;
   await navigator.clipboard.writeText(text);
   setStatus("✔️ Copied source text.");
-  setTimeout(() => setStatus(""), 1500);
+  setTimeout(() => setStatus(""), 2000);
 }
 
 async function copyTerms() {
@@ -142,7 +142,7 @@ async function copyTerms() {
 
   await navigator.clipboard.writeText(text);
   setStatus("✔️ Copied glossary terms.");
-  setTimeout(() => setStatus(""), 1500);
+  setTimeout(() => setStatus(""), 2000);
 }
 
 function lockUI() {
@@ -227,7 +227,7 @@ async function unlock() {
     el("gate").style.display = "none";
     unlockUI();
     setStatus("✅ Unlocked.");
-    setTimeout(() => setStatus(""), 1500);
+    setTimeout(() => setStatus(""), 2000);
   } catch (e) {
     ACCESS_KEY = "";
     setGateError("❌ Invalid code.");
