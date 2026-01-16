@@ -1,140 +1,224 @@
 :root {
-  --bg: #0b0f14;
-  --card: #111827;
-  --text: #e5e7eb;
-  --muted: #9ca3af;
-  --border: #243244;
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --danger: #ef4444;
+  /* Rollomatic-inspired palette */
+  --bg: #f6f9ff;           /* very light blue/white */
+  --card: #ffffff;
+  --text: #0b1b3a;         /* deep blue */
+  --muted: #5a6b85;
+  --border: #d9e3f2;
+
+  --blue-dark: #0b2a5b;    /* deep Rollomatic-like */
+  --blue: #1f6feb;         /* clear blue */
+  --blue-light: #e8f1ff;   /* light blue background */
+  --danger: #d92d20;
+
+  --shadow: 0 10px 24px rgba(11, 27, 58, 0.10);
 }
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, #070a0f, var(--bg));
+  background: radial-gradient(1200px 500px at 50% 0%, var(--blue-light), var(--bg));
   color: var(--text);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 .container {
-  max-width: 980px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 18px 16px;
 }
 
-h1 { margin: 18px 0 6px; font-size: 28px; }
-
-.card {
-  background: rgba(17, 24, 39, 0.75);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  backdrop-filter: blur(6px);
+/* Top bar */
+.topbar {
+  background: linear-gradient(90deg, var(--blue-dark), #123a7a);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
+.topbarInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.title {
+  margin: 10px 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+/* Simple brand accent bar (optional visual) */
+.brandMark {
+  width: 54px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.55));
+  opacity: 0.9;
+}
+
+/* Form basics */
 label {
   display: block;
-  font-weight: 600;
+  font-weight: 650;
   margin-bottom: 8px;
+  color: var(--text);
 }
 
 select, textarea, button, input {
   width: 100%;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
+  background: #fff;
   color: var(--text);
-  padding: 10px 12px;
+  padding: 12px 12px;
   font-size: 14px;
+  outline: none;
 }
 
-textarea { resize: vertical; min-height: 120px; }
+select:focus, textarea:focus, input:focus {
+  border-color: rgba(31, 111, 235, 0.55);
+  box-shadow: 0 0 0 4px rgba(31, 111, 235, 0.12);
+}
 
+textarea {
+  resize: vertical;
+  min-height: 190px;
+  line-height: 1.45;
+}
+
+/* Buttons */
 button {
   cursor: pointer;
-  transition: transform 0.02s ease, background 0.15s ease;
+  transition: transform 0.02s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
-
 button:active { transform: translateY(1px); }
 button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .primary {
-  background: var(--primary);
-  border-color: rgba(255,255,255,0.08);
+  background: var(--blue);
+  color: white;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 10px 18px rgba(31, 111, 235, 0.22);
 }
-.primary:hover { background: var(--primary-hover); }
+.primary:hover { box-shadow: 0 12px 22px rgba(31, 111, 235, 0.28); }
+
+.secondary {
+  background: #fff;
+  color: var(--blue-dark);
+  border-color: var(--border);
+}
+.secondary:hover { background: rgba(11, 42, 91, 0.03); }
 
 .ghost {
   width: auto;
-  padding: 8px 10px;
+  padding: 9px 10px;
   background: transparent;
+  border: 1px solid var(--border);
+  color: var(--blue-dark);
+}
+.ghost:hover { background: rgba(31,111,235,0.06); }
+
+/* Controls card */
+.controlsCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  margin-top: 18px;
 }
 
-.grid {
+.controlsGrid {
   display: grid;
+  grid-template-columns: 1fr 1fr 140px 1.3fr;
   gap: 12px;
-  grid-template-columns: 1fr 1fr 180px;
   align-items: end;
 }
 
+.actions { display: flex; gap: 10px; }
 .actions button { width: 100%; }
 
-.section { margin-top: 16px; }
-
-.row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 10px;
-  flex-wrap: wrap;
+.rightActions {
+  justify-content: flex-end;
+}
+.rightActions button {
+  width: auto;
+  min-width: 120px;
 }
 
-.row button { width: auto; min-width: 120px; }
+.messages {
+  margin-top: 8px;
+  display: grid;
+  gap: 4px;
+}
 
-.outputHeader {
+.status { color: var(--muted); margin: 0; min-height: 18px; }
+.error { color: var(--danger); margin: 0; min-height: 18px; }
+
+/* Panels layout */
+.panelGrid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+.panelHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-bottom: 10px;
 }
-.outputHeader h2 { margin: 0; font-size: 18px; }
 
+.panelHeader h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 750;
+  color: var(--blue-dark);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Outputs */
 .output {
-  margin-top: 10px;
+  margin: 0;
   white-space: pre-wrap;
-  background: rgba(0,0,0,0.25);
+  background: #fbfcff;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px;
-  min-height: 110px;
+  min-height: 190px;
+  line-height: 1.45;
 }
 
 .mutedBox {
   color: var(--muted);
 }
 
-.status { color: var(--muted); margin: 10px 0 0; min-height: 20px; }
-.error { color: var(--danger); margin: 8px 0 0; min-height: 20px; }
-
-.footer {
-  color: var(--muted);
-  font-size: 12px;
-  padding-bottom: 28px;
-}
-
-/* ================================
-   Glossary terms box
-   ================================ */
+/* Terms box */
 .termsBox {
-  margin-top: 10px;
-  background: rgba(0,0,0,0.20);
+  margin: 0;
+  background: #fbfcff;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 12px;
-  min-height: 60px;
+  min-height: 190px;
+  line-height: 1.45;
 }
 
 .termsList {
@@ -143,14 +227,22 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
 .termsList li {
-  margin: 6px 0;
+  margin: 7px 0;
 }
 
 .termPair code {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(31, 111, 235, 0.08);
+  border: 1px solid rgba(31, 111, 235, 0.18);
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: 10px;
+}
+
+/* Footer */
+.footer {
+  color: var(--muted);
+  font-size: 12px;
+  padding-bottom: 28px;
+  margin-top: 6px;
 }
 
 /* ================================
@@ -159,7 +251,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .gate {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.65);
+  background: rgba(11, 27, 58, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -169,28 +261,32 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .gateCard {
   width: min(520px, 100%);
-  background: rgba(17, 24, 39, 0.92);
+  background: #ffffff;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 18px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  box-shadow: var(--shadow);
 }
 
-.gateCard h2 { margin: 0 0 10px; }
-.gateCard p { color: var(--muted); margin: 0 0 14px; }
+.gateCard h2 { margin: 0 0 8px; color: var(--blue-dark); }
+.gateCard p { margin: 0 0 14px; color: var(--muted); }
 
 .gateCard input {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.04);
-  color: var(--text);
-  padding: 10px 12px;
-  font-size: 14px;
+  background: #fbfcff;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  .controlsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .actions, .rightActions {
+    grid-column: 1 / -1;
+  }
+  .rightActions { justify-content: flex-start; }
 }
 
 @media (max-width: 760px) {
-  .grid { grid-template-columns: 1fr; }
-  .actions button { width: 100%; }
-  .row button { flex: 1; }
+  .panelGrid { grid-template-columns: 1fr; }
+  textarea, .output, .termsBox { min-height: 160px; }
 }
