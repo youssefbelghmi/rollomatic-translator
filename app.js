@@ -1,10 +1,6 @@
 // ================================
 // CONFIG
 // ================================
-
-// Azure backend URL (plug in later). Leave empty for DEMO mode.
-// Example: "https://your-backend-domain/translate"
-// const API_URL = ""; // empty = DEMO mode (no network call)
 const API_URL = "https://rollomatic-translator-api.onrender.com/translate";
 const REQUEST_TIMEOUT_MS = 30000;
 
@@ -29,6 +25,56 @@ function setOutput(text) {
   el("copyBtn").disabled = !text || text === "The translation will appear here.";
 }
 
+function setDraftOutput(text) {
+  const draftEl = el("draftOutput");
+  if (!text) {
+    draftEl.textContent = "The draft translation will appear here.";
+    draftEl.classList.add("mutedBox");
+    el("copyDraftBtn").disabled = true;
+    return;
+  }
+  draftEl.textContent = text;
+  draftEl.classList.remove("mutedBox");
+  el("copyDraftBtn").disabled = false;
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function setTerms(terms) {
+  const box = el("termsBox");
+  const copyBtn = el("copyTermsBtn");
+
+  if (!Array.isArray(terms) || terms.length === 0) {
+    box.textContent = "No glossary terms found for this text.";
+    box.classList.add("mutedBox");
+    copyBtn.disabled = true;
+    return;
+  }
+
+  box.classList.remove("mutedBox");
+
+  const ul = document.createElement("ul");
+  ul.className = "termsList";
+
+  for (const t of terms) {
+    const li = document.createElement("li");
+    li.className = "termPair";
+    li.innerHTML = `<span class="termPair"><code>${escapeHtml(t.src_term)}</code> → <code>${escapeHtml(t.tgt_term)}</code></span>`;
+    ul.appendChild(li);
+  }
+
+  box.innerHTML = "";
+  box.appendChild(ul);
+  copyBtn.disabled = false;
+}
+
 function swapLangs() {
   const src = el("srcLang");
   const tgt = el("tgtLang");
@@ -40,25 +86,61 @@ function swapLangs() {
 function clearAll() {
   el("inputText").value = "";
   el("output").textContent = "The translation will appear here.";
+  el("draftOutput").textContent = "The draft translation will appear here.";
+  el("draftOutput").classList.add("mutedBox");
+  el("termsBox").textContent = "No glossary terms found yet.";
+  el("termsBox").classList.add("mutedBox");
+
   setStatus("");
   setError("");
+
   el("copyBtn").disabled = true;
+  el("copyDraftBtn").disabled = true;
+  el("copyTermsBtn").disabled = true;
 }
 
 async function copyOutput() {
   const text = el("output").textContent;
   if (!text || text === "The translation will appear here.") return;
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied to clipboard.");
+  setStatus("✅ Copied translation to clipboard.");
+  setTimeout(() => setStatus(""), 1500);
+}
+
+async function copyDraft() {
+  const text = el("draftOutput").textContent;
+  if (!text || text === "The draft translation will appear here.") return;
+  await navigator.clipboard.writeText(text);
+  setStatus("✅ Copied draft to clipboard.");
+  setTimeout(() => setStatus(""), 1500);
+}
+
+async function copyTerms() {
+  const btn = el("copyTermsBtn");
+  if (btn.disabled) return;
+
+  const box = el("termsBox");
+  const items = box.querySelectorAll("li");
+
+  const text = (items && items.length)
+    ? Array.from(items).map(li => li.textContent.trim()).join("\n")
+    : box.textContent.trim();
+
+  if (!text) return;
+
+  await navigator.clipboard.writeText(text);
+  setStatus("✅ Copied glossary terms.");
   setTimeout(() => setStatus(""), 1500);
 }
 
 function lockUI() {
-  // Disable main app controls until unlocked
   el("translateBtn").disabled = true;
   el("swapBtn").disabled = true;
   el("clearBtn").disabled = true;
   el("copyBtn").disabled = true;
+  el("copyDraftBtn").disabled = true;
+  el("copyTermsBtn").disabled = true;
+
   el("inputText").disabled = true;
   el("srcLang").disabled = true;
   el("tgtLang").disabled = true;
@@ -68,12 +150,15 @@ function unlockUI() {
   el("translateBtn").disabled = false;
   el("swapBtn").disabled = false;
   el("clearBtn").disabled = false;
+
   el("inputText").disabled = false;
   el("srcLang").disabled = false;
   el("tgtLang").disabled = false;
 
-  // Copy stays disabled until there is output
+  // Copy buttons depend on content
   el("copyBtn").disabled = true;
+  el("copyDraftBtn").disabled = true;
+  el("copyTermsBtn").disabled = true;
 }
 
 // ================================
@@ -86,7 +171,7 @@ function demoTranslate({ src_lang, tgt_lang, text }) {
 }
 
 // ================================
-// Real API call (when you plug backend)
+// Real API call
 // ================================
 async function callBackend({ src_lang, tgt_lang, text }) {
   const controller = new AbortController();
@@ -97,7 +182,6 @@ async function callBackend({ src_lang, tgt_lang, text }) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Access header required by backend
         "x-access-key": ACCESS_KEY,
       },
       body: JSON.stringify({ src_lang, tgt_lang, text }),
@@ -129,14 +213,10 @@ async function unlock() {
     return;
   }
 
-  // Save in memory only
   ACCESS_KEY = key;
 
-  // Validate key by doing a tiny test request (fast & reliable)
-  // If your backend is configured correctly, invalid key will return 401.
   try {
     if (!API_URL) {
-      // DEMO mode: allow unlock without server
       el("gate").style.display = "none";
       unlockUI();
       setStatus("ℹ️ DEMO mode: unlocked (no backend).");
@@ -180,12 +260,18 @@ async function translateText() {
     if (!API_URL) {
       const out = demoTranslate({ src_lang, tgt_lang, text });
       setOutput(out);
+      setDraftOutput("");
+      setTerms([]);
       setStatus("ℹ️ DEMO mode: backend not connected.");
       return;
     }
 
     const data = await callBackend({ src_lang, tgt_lang, text });
+
     setOutput(data.translation || "");
+    setDraftOutput(data.draft || "");
+    setTerms(data.terms || []);
+
     setStatus("✅ Done.");
   } catch (e) {
     if (e.name === "AbortError") {
@@ -206,8 +292,8 @@ async function translateText() {
 // Wire events
 // ================================
 window.addEventListener("DOMContentLoaded", () => {
-  // Gate is shown on every page load
   lockUI();
+  clearAll();
 
   // Gate events
   el("unlockBtn").addEventListener("click", unlock);
@@ -219,6 +305,8 @@ window.addEventListener("DOMContentLoaded", () => {
   el("swapBtn").addEventListener("click", swapLangs);
   el("clearBtn").addEventListener("click", clearAll);
   el("copyBtn").addEventListener("click", copyOutput);
+  el("copyDraftBtn").addEventListener("click", copyDraft);
+  el("copyTermsBtn").addEventListener("click", copyTerms);
   el("translateBtn").addEventListener("click", translateText);
 
   // UX: Ctrl+Enter to translate
@@ -226,6 +314,5 @@ window.addEventListener("DOMContentLoaded", () => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") translateText();
   });
 
-  // Focus the access code input by default
   el("accessKey").focus();
 });
