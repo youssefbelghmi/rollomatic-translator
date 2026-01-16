@@ -227,7 +227,7 @@ async function unlock() {
     el("gate").style.display = "none";
     unlockUI();
     setStatus("Unlocked");
-    setTimeout(() => setStatus(""), 1000);
+    setTimeout(() => setStatus(""), 500);
   } catch (e) {
     ACCESS_KEY = "";
     setGateError("Invalid code");
