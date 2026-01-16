@@ -41,7 +41,7 @@ label {
   margin-bottom: 8px;
 }
 
-select, textarea, button {
+select, textarea, button, input {
   width: 100%;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -119,6 +119,42 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   color: var(--muted);
   font-size: 12px;
   padding-bottom: 28px;
+}
+
+/* ================================
+   Access Gate Overlay
+   ================================ */
+.gate {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9999;
+}
+
+.gateCard {
+  width: min(520px, 100%);
+  background: rgba(17, 24, 39, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+}
+
+.gateCard h2 { margin: 0 0 10px; }
+.gateCard p { color: var(--muted); margin: 0 0 14px; }
+
+.gateCard input {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  padding: 10px 12px;
+  font-size: 14px;
 }
 
 @media (max-width: 760px) {
