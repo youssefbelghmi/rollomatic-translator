@@ -75,6 +75,11 @@ function setTerms(terms) {
   copyBtn.disabled = false;
 }
 
+function updateCopyInputBtnState() {
+  const txt = el("inputText").value.trim();
+  el("copyInputBtn").disabled = !txt;
+}
+
 function swapLangs() {
   const src = el("srcLang");
   const tgt = el("tgtLang");
@@ -85,11 +90,9 @@ function swapLangs() {
 
 function clearAll() {
   el("inputText").value = "";
-  el("output").textContent = "The translation will appear here.";
-  el("draftOutput").textContent = "The draft translation will appear here.";
-  el("draftOutput").classList.add("mutedBox");
-  el("termsBox").textContent = "No glossary terms found yet.";
-  el("termsBox").classList.add("mutedBox");
+  setOutput("The translation will appear here.");
+  setDraftOutput("");
+  setTerms([]);
 
   setStatus("");
   setError("");
@@ -97,13 +100,14 @@ function clearAll() {
   el("copyBtn").disabled = true;
   el("copyDraftBtn").disabled = true;
   el("copyTermsBtn").disabled = true;
+  el("copyInputBtn").disabled = true;
 }
 
 async function copyOutput() {
   const text = el("output").textContent;
   if (!text || text === "The translation will appear here.") return;
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied translation to clipboard.");
+  setStatus("✅ Copied translated text.");
   setTimeout(() => setStatus(""), 1500);
 }
 
@@ -111,7 +115,15 @@ async function copyDraft() {
   const text = el("draftOutput").textContent;
   if (!text || text === "The draft translation will appear here.") return;
   await navigator.clipboard.writeText(text);
-  setStatus("✅ Copied draft to clipboard.");
+  setStatus("✅ Copied SuperText translation.");
+  setTimeout(() => setStatus(""), 1500);
+}
+
+async function copyInput() {
+  const text = el("inputText").value.trim();
+  if (!text) return;
+  await navigator.clipboard.writeText(text);
+  setStatus("✅ Copied source text.");
   setTimeout(() => setStatus(""), 1500);
 }
 
@@ -137,9 +149,11 @@ function lockUI() {
   el("translateBtn").disabled = true;
   el("swapBtn").disabled = true;
   el("clearBtn").disabled = true;
+
   el("copyBtn").disabled = true;
   el("copyDraftBtn").disabled = true;
   el("copyTermsBtn").disabled = true;
+  el("copyInputBtn").disabled = true;
 
   el("inputText").disabled = true;
   el("srcLang").disabled = true;
@@ -159,15 +173,7 @@ function unlockUI() {
   el("copyBtn").disabled = true;
   el("copyDraftBtn").disabled = true;
   el("copyTermsBtn").disabled = true;
-}
-
-// ================================
-// DEMO translation (frontend only)
-// ================================
-function demoTranslate({ src_lang, tgt_lang, text }) {
-  const header = `DEMO (backend not connected)\nSource: ${src_lang}  →  Target: ${tgt_lang}\n`;
-  const body = `\nText received:\n${text}\n\n---\nResult (placeholder):\n[Translation will be available once the API is connected]\n`;
-  return header + body;
+  updateCopyInputBtnState();
 }
 
 // ================================
@@ -216,14 +222,6 @@ async function unlock() {
   ACCESS_KEY = key;
 
   try {
-    if (!API_URL) {
-      el("gate").style.display = "none";
-      unlockUI();
-      setStatus("ℹ️ DEMO mode: unlocked (no backend).");
-      setTimeout(() => setStatus(""), 1500);
-      return;
-    }
-
     await callBackend({ src_lang: "fr", tgt_lang: "en", text: "test" });
 
     el("gate").style.display = "none";
@@ -257,15 +255,6 @@ async function translateText() {
   setStatus("⏳ Translating...");
 
   try {
-    if (!API_URL) {
-      const out = demoTranslate({ src_lang, tgt_lang, text });
-      setOutput(out);
-      setDraftOutput("");
-      setTerms([]);
-      setStatus("ℹ️ DEMO mode: backend not connected.");
-      return;
-    }
-
     const data = await callBackend({ src_lang, tgt_lang, text });
 
     setOutput(data.translation || "");
@@ -304,15 +293,22 @@ window.addEventListener("DOMContentLoaded", () => {
   // App events
   el("swapBtn").addEventListener("click", swapLangs);
   el("clearBtn").addEventListener("click", clearAll);
+
   el("copyBtn").addEventListener("click", copyOutput);
   el("copyDraftBtn").addEventListener("click", copyDraft);
   el("copyTermsBtn").addEventListener("click", copyTerms);
+  el("copyInputBtn").addEventListener("click", copyInput);
+
   el("translateBtn").addEventListener("click", translateText);
+
+  // Enable/disable copy input as user types
+  el("inputText").addEventListener("input", updateCopyInputBtnState);
 
   // UX: Ctrl+Enter to translate
   el("inputText").addEventListener("keydown", (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") translateText();
   });
 
+  // Focus the access code input
   el("accessKey").focus();
 });
