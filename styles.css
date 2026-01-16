@@ -121,9 +121,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   padding-bottom: 28px;
 }
 
-/* ================================
-   Access Gate Overlay
-   ================================ */
 .gate {
   position: fixed;
   inset: 0;
