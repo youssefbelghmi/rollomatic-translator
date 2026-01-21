@@ -102,13 +102,15 @@ function clearAll() {
   setDraftOutput("");
   setTerms([]);
 
-  setStatus("");
   setError("");
 
   el("copyBtn").disabled = true;
   el("copyDraftBtn").disabled = true;
   el("copyTermsBtn").disabled = true;
   el("copyInputBtn").disabled = true;
+
+  setStatus("🧹 Cleared.");
+  setTimeout(() => setStatus(""), 2000);
 }
 
 async function copyOutput() {
@@ -254,7 +256,9 @@ async function translateText() {
   const text = el("inputText").value.trim();
 
   if (!text) {
-    setError("Please enter some text.");
+    setError("");
+    setStatus("📝 Please enter some text.");
+    setTimeout(() => setStatus(""), 2000);
     return;
   }
 
@@ -272,11 +276,13 @@ async function translateText() {
     setStatus("☑️ Done.");
   } catch (e) {
     if (e.name === "AbortError") {
-      setError("Request timed out.");
+      setError("");
+      setStatus("⚠️ Request timed out, retry.");
+      setTimeout(() => setStatus(""), 2000);
     } else {
-      setError(e.message || "Unknown error.");
+      setError(e.message || "‼️ Unknown error.");
+      setStatus("");
     }
-    setStatus("");
   } finally {
     btn.disabled = false;
     if (!el("error").textContent) {
