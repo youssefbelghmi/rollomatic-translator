@@ -66,7 +66,12 @@ function setTerms(terms) {
   for (const t of terms) {
     const li = document.createElement("li");
     li.className = "termPair";
-    li.innerHTML = `<span class="termPair"><code>${escapeHtml(t.src_term)}</code> → <code>${escapeHtml(t.tgt_term)}</code></span>`;
+
+    const tgt =
+      Array.isArray(t.tgt_terms) ? t.tgt_terms.join(" | ")
+      : (t.tgt_term ?? "");
+
+    li.innerHTML = `<span class="termPair"><code>${escapeHtml(t.src_term)}</code> → <code>${escapeHtml(tgt)}</code></span>`;
     ul.appendChild(li);
   }
 
